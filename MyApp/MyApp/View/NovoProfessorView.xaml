@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyApp.View.NovoProfessorView"
+             Title="Cadastrar Professor">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Salvar" x:Name="btnSalvar" Command="{Binding OnAdicionarProfessorCMD}" 
+                     CommandParameter="{Binding BindingContext, Source={x:Reference Name=rootProfessor}}" Order="Primary" Priority="1" />
+        <ToolbarItem Text="Cancelar" x:Name="btnCancelar" Command="{Binding OnSairCMD}" Order="Primary" Priority="2" />
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Content>
+        <StackLayout x:Name="rootProfessor" Padding="7" BindingContext="{Binding Selecionado}">
+            <Label Text="Nome" Font="14" />
+            <Entry x:Name="txtNome" Text="{Binding Nome}" />
+            <Label Text="Título" Font="14" />
+            <Entry x:Name="txtTitulo" Text="{Binding Titulo}" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
