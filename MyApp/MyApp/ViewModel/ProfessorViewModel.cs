@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Input;
@@ -24,6 +25,20 @@ namespace MyApp.ViewModel
             {
                 selecionado = value as Professor;
                 EventPropertyChanged();
+            }
+        }
+
+        private string pesquisaPorNome;
+        public string PesquisaPorNome
+        {
+            get { return pesquisaPorNome; }
+            set
+            {
+                if (value == pesquisaPorNome) return;
+
+                pesquisaPorNome = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PesquisaPorNome)));
+                AplicarFiltro();
             }
         }
 
@@ -50,12 +65,25 @@ namespace MyApp.ViewModel
 
         public async void Carregar()
         {
-            Professores.Clear();
-            CopiaListaProfessores = new List<Professor>();
             CopiaListaProfessores = await ProfessorRepository.GetProfessoresSqlAzureAsync();
             CopiaListaProfessores.ForEach(x => {
                 Professores.Add(x);
             });
+
+            AplicarFiltro();
+        }
+
+        private void AplicarFiltro()
+        {
+            Professores.Clear();
+
+            if (pesquisaPorNome == null)
+                pesquisaPorNome = "";
+
+            var resultado = CopiaListaProfessores.Where(n => n.Nome.ToLowerInvariant()
+                                .Contains(PesquisaPorNome.ToLowerInvariant().Trim())).ToList();
+
+            if(resultado.Count != 0) resultado.ForEach(x => Professores.Add(x));
         }
 
         public async void Adicionar(Professor paramProfessor)
